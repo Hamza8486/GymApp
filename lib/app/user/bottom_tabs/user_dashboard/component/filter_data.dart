@@ -10,6 +10,7 @@ import 'package:gym_app/app/util/theme.dart';
 import 'package:gym_app/app/util/toast.dart';
 import 'package:gym_app/app/widgets/app_button.dart';
 import 'package:gym_app/app/widgets/app_text.dart';
+import 'package:intl/intl.dart';
 
 
 import '../../../../auth/component.dart';
@@ -24,6 +25,7 @@ class FilterGymData extends StatefulWidget {
 
 class _FilterGymDataState extends State<FilterGymData> {
   final gymController = Get.put(UserController());
+  var startDate= TextEditingController();
   TextEditingController fee = TextEditingController();
   TextEditingController start = TextEditingController();
   TextEditingController end = TextEditingController();
@@ -45,7 +47,8 @@ class _FilterGymDataState extends State<FilterGymData> {
     Get.put(AuthController()).updateLat("");
     Get.put(AuthController()).updateLng("");
 
-  }
+  }double _startValue = 0.0;
+  double range = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -172,46 +175,95 @@ class _FilterGymDataState extends State<FilterGymData> {
                           SizedBox(
                             height: Get.height * 0.02,
                           ),
-                          textAuth(text: "Gym Fee",color: Colors.transparent),
+                          textAuth(text: "Fee Range",color: Colors.transparent),
                           SizedBox(
                             height: Get.height * 0.01,
                           ),
-                          betField(
-                            hint: "Gym Fee",
-                            isSuffix: true,
-                            textInputAction: TextInputAction.next,
-                            textInputType: TextInputType.phone,
-                            controller: fee,
+                          SizedBox(
+                            width: Get.width,
+                            child: SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor: AppColor.secondary1, // Active segment color
+                                inactiveTrackColor: AppColor.secondary, // Inactive segment color
+                                thumbColor: AppColor.secondary1,
+                                overlayColor: AppColor.white,
+                                valueIndicatorColor:AppColor.secondary,
+                              ),
+                              child: Slider(
+                                value: _startValue,
+                                min: 0,
+                                max: 10000,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _startValue = value;
+                                  });
+                                },
+                                divisions: 100, // Number of divisions
+                                label: _startValue.toStringAsFixed(0),
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child:  Text("${_startValue.toStringAsFixed(0)}₣",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.start,
+
+                              style: TextStyle(fontSize: AppSizes.size_12,
+
+                                  color: AppColor.boldBlackColor.withOpacity(0.8),
+                                  height:Get.width*0.002,
+                                  fontWeight: FontWeight.w700),),
+                          ),
+
+                          SizedBox(
+                            height: Get.height * 0.01,
+                          ),
+                          textAuth(text: "Radius Range",color: Colors.transparent),
+                          SizedBox(
+                            height: Get.height * 0.02,
+                          ),
+                          SizedBox(
+                            width: Get.width,
+
+                            child: SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor: AppColor.secondary1, // Active segment color
+                                inactiveTrackColor: AppColor.secondary, // Inactive segment color
+                                thumbColor: AppColor.secondary1,
+                                overlayColor: AppColor.white,
+                                valueIndicatorColor:AppColor.secondary,
+                              ),
+                              child: Slider(
+                                value: range,
+                                min: 0,
+                                max: 50,
+                                onChanged: (value) {
+                                  setState(() {
+                                    range = value;
+                                    gymController.updateRadius(range.toStringAsFixed(0));
+                                  });
+                                },
+                                divisions: 100, // Number of divisions
+                                label: "${range.toStringAsFixed(0)} km",
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: AppText(
+                              title: range.toStringAsFixed(0),
+                              size: AppSizes.size_15,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: AppFont.semi,
+                              color: AppColor.boldBlackColor.withOpacity(0.8),
+                            ),
                           ),
                           SizedBox(
                             height: Get.height * 0.02,
                           ),
-                          textAuth(text: "Km Range",color: Colors.transparent),
-                          SizedBox(
-                            height: Get.height * 0.01,
-                          ),
-                          SizedBox(
-                              width: Get.width,
-                              child: Obx(() {
-                                return dropDownAppAdd(
-                                  hint: "Select Km",
-                                  width: Get.width * 0.92,
-                                  items: [
-                                    "10",
-                                    "20",
-                                    "30",
-                                    "40",
-                                    "50",
 
-                                  ],
-                                  value:gymController.radius.value.isEmpty?null:gymController.radius.value,
-                                  onChange: (value) {
-                                    gymController.updateRadius(value.toString());
-
-
-                                  },
-                                );
-                              })),
                           SizedBox(
                             height: Get.height * 0.02,
                           ),
@@ -279,8 +331,82 @@ class _FilterGymDataState extends State<FilterGymData> {
                           SizedBox(
                             height: Get.height * 0.02,
                           ),
+                          textAuth(text: "Appointment Start Date",
+                              height:AppSizes.size_13
+                          ),
+                          SizedBox(
+                            height: Get.height * 0.012,
+                          ),
 
+                          betField(
 
+                            hint: "Start Date",
+                            textInputType: TextInputType.visiblePassword,
+                            textInputAction: TextInputAction.done,
+                            isRead: true,
+                            cur: false,
+                            focusNode: _focusNode,
+                            onChange: (val){
+                              setState(() {
+
+                              });
+                            },
+
+                            onTap: () async{
+                              DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  initialEntryMode: DatePickerEntryMode.calendarOnly,
+
+                                  builder: (BuildContext? context,
+                                      Widget? child) {
+                                    return Center(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(20)),
+                                          width: 350.0,
+                                          height: 500.0,
+                                          child: Theme(
+                                            data: ThemeData.light().copyWith(
+                                              primaryColor:
+                                              AppColor.blackColor,
+                                              accentColor:
+                                              AppColor.blackColor,
+                                              colorScheme: ColorScheme.light(
+                                                primary:
+                                                AppColor.blackColor,),
+                                              buttonTheme: ButtonThemeData(
+                                                  buttonColor:
+                                                  AppColor.primaryColor),
+                                            ),
+                                            child: child!,
+                                          ),
+                                        ));
+                                  },
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime(2050));
+
+                              if (pickedDate != null) {
+                                startDate.text =
+                                    DateFormat('yyyy-MM-dd')
+                                        .format(pickedDate);
+                              }
+                            },
+                            controller: startDate,
+                            child:    IconButton(
+                                onPressed: () {
+
+                                },
+                                icon: Icon(
+                                    Icons.calendar_month,
+                                    size: Get.height * 0.022,
+                                    color: Colors.black)),
+                          ),
+
+                          SizedBox(
+                            height: Get.height * 0.02,
+                          ),
                           Row(
                             children: [
                               Expanded(
@@ -441,6 +567,7 @@ class _FilterGymDataState extends State<FilterGymData> {
                              fee.clear();
                              end.clear();
                              start.clear();
+                             startDate.clear();
                              gymType=null;
                              gymController.updateGender("");
                              gymController.updateSessions("");
@@ -468,10 +595,13 @@ class _FilterGymDataState extends State<FilterGymData> {
 
                                   () {
                                 gymController.updateLoader2(true);
-                                gymController.getFilterData(gendar: gymController.gendarName.value,fees: fee.text,
+                                gymController.getFilterData(gendar: gymController.gendarName.value,fees:
+                                _startValue==0.0?"":
+                                _startValue.toStringAsFixed(0),
                                     sessions: gymController.sessionName.value,
                                   time: start.text,
                                   time1: end.text,
+                                  date: startDate.text,
                                   day: day==null?"":day.toString(),
                                   type: gymType==null?"":gymType.toString(),
                                 );
@@ -479,10 +609,14 @@ class _FilterGymDataState extends State<FilterGymData> {
                               }:(){
                                if(validateGym(context)){
                                  gymController.updateLoader2(true);
-                                 gymController.getFilterData(gendar: gymController.gendarName.value,fees: fee.text,
+                                 print(_startValue.toStringAsFixed(0));
+                                 gymController.getFilterData(gendar: gymController.gendarName.value,fees:
+                                 _startValue==0.0?"":
+                                 _startValue.toStringAsFixed(0),
                                    sessions: gymController.sessionName.value,
                                    time: start.text,
                                    time1: end.text,
+                                   date: startDate.text,
                                    day: day==null?"":day.toString(),
                                    type: gymType==null?"":gymType.toString(),
 

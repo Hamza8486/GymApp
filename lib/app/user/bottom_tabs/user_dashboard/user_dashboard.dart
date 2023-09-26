@@ -1,9 +1,12 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:gym_app/app/auth/component.dart';
 import 'package:gym_app/app/auth/controller.dart';
 import 'package:gym_app/app/auth/login.dart';
 import 'package:gym_app/app/gym/bottom_tabs/dashboard/controller/controller.dart';
+import 'package:gym_app/app/services/api_manager.dart';
 import 'package:gym_app/app/user/bottom_tabs/user_dashboard/component/component.dart';
 import 'package:gym_app/app/user/bottom_tabs/user_dashboard/component/filter_data.dart';
 import 'package:gym_app/app/user/bottom_tabs/user_dashboard/component/map_view.dart';
@@ -11,6 +14,7 @@ import 'package:gym_app/app/user/bottom_tabs/user_dashboard/component/user_detai
 import 'package:gym_app/app/user/home/controller/user_controller.dart';
 import 'package:gym_app/app/util/theme.dart';
 import 'package:gym_app/app/util/toast.dart';
+import 'package:gym_app/app/widgets/app_button.dart';
 import 'package:gym_app/app/widgets/app_text.dart';
 import 'package:gym_app/app/widgets/app_textfield.dart';
 import 'package:gym_app/app/widgets/bottom_sheet.dart';
@@ -36,7 +40,15 @@ class _UserDashboardState extends State<UserDashboard> {
       homeController.getData();
     });
   }
+  TextEditingController end = TextEditingController();
+  TextEditingController date = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -311,7 +323,238 @@ class _UserDashboardState extends State<UserDashboard> {
                                       time1:DateFormat.jm().format(DateFormat("hh:mm").parse(homeController.gymList[index].endTime??"")),
 
 
-                                      address:homeController.gymList[index].address
+                                      address:homeController.gymList[index].address,
+                                      child2:Container(),
+                                    onTap1: (){
+                                        setState(() {
+                                          end.clear();
+                                          date.clear();
+                                        });
+
+                                      Get.generalDialog(
+                                          barrierDismissible: false,
+                                          pageBuilder: (context, __, ___) => WillPopScope(
+                                            onWillPop: () async {
+                                              // Handle the back button press event
+                                              return true; // Return false to prevent dialog from closing
+                                            },
+                                            child: AlertDialog(
+
+                                              content: SizedBox(
+                                                height: Get.height*0.35,
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Center(
+                                                      child: AppText(
+                                                        title: "Book Appointment",
+                                                        size: AppSizes.size_16,
+                                                        fontWeight: FontWeight.w400,
+                                                        fontFamily: AppFont.semi,
+                                                        color: AppColor.boldBlackColor.withOpacity(0.8),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: Get.height * 0.02,
+                                                    ),
+                                                    textAuth(text: "Select Date",color: Colors.transparent),
+                                                    SizedBox(
+                                                      height: Get.height * 0.01,
+                                                    ),
+                                                    betField(
+
+                                                      hint: "Select Date",
+                                                      textInputType: TextInputType.visiblePassword,
+                                                      textInputAction: TextInputAction.done,
+                                                      isRead: true,
+                                                      cur: false,
+                                                      focusNode: _focusNode,
+                                                      onChange: (val){
+                                                        setState(() {
+
+                                                        });
+                                                      },
+
+                                                      onTap: () async{
+                                                        DateTime? pickedDate = await showDatePicker(
+                                                            context: context,
+                                                            initialEntryMode: DatePickerEntryMode.calendarOnly,
+
+                                                            builder: (BuildContext? context,
+                                                                Widget? child) {
+                                                              return Center(
+                                                                  child: Container(
+                                                                    decoration: BoxDecoration(
+                                                                        borderRadius:
+                                                                        BorderRadius.circular(20)),
+                                                                    width: 350.0,
+                                                                    height: 500.0,
+                                                                    child: Theme(
+                                                                      data: ThemeData.light().copyWith(
+                                                                        primaryColor:
+                                                                        AppColor.blackColor,
+                                                                        accentColor:
+                                                                        AppColor.blackColor,
+                                                                        colorScheme: ColorScheme.light(
+                                                                          primary:
+                                                                          AppColor.blackColor,),
+                                                                        buttonTheme: ButtonThemeData(
+                                                                            buttonColor:
+                                                                            AppColor.primaryColor),
+                                                                      ),
+                                                                      child: child!,
+                                                                    ),
+                                                                  ));
+                                                            },
+                                                            initialDate: DateTime.now(),
+                                                            firstDate: DateTime.now(),
+                                                            lastDate: DateTime(2050));
+
+                                                        if (pickedDate != null) {
+                                                          date.text =
+                                                              DateFormat('yyyy-MM-dd')
+                                                                  .format(pickedDate);
+                                                        }
+                                                      },
+                                                      controller: date,
+                                                      child:    IconButton(
+                                                          onPressed: () {
+
+                                                          },
+                                                          icon: Icon(
+                                                              Icons.calendar_month,
+                                                              size: Get.height * 0.022,
+                                                              color: Colors.black)),
+                                                    ),
+                                              SizedBox(
+                                                height: Get.height * 0.02,
+                                              ),
+                                              textAuth(text: "Select time",color: Colors.transparent),
+                                              SizedBox(
+                                                height: Get.height * 0.01,
+                                              ),
+                                              betField(
+
+                                                hint: "Select time",
+                                                textInputType: TextInputType.visiblePassword,
+                                                textInputAction: TextInputAction.done,
+                                                isRead: true,
+                                                cur: false,
+                                                focusNode: _focusNode,
+                                                onChange: (val){
+                                                  setState(() {
+
+                                                  });
+                                                },
+
+                                                onTap: ()async{
+
+                                                  final TimeOfDay? pickedTime = await showTimePicker(
+                                                    context: context,
+                                                    initialTime: TimeOfDay.now(),
+                                                    builder: (BuildContext context, Widget? child) {
+                                                      return MediaQuery(
+                                                        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                                        child: child!,
+                                                      );
+                                                    },
+                                                  );
+
+                                                  if (pickedTime != null) {
+                                                    final String formattedTime =
+                                                        '${pickedTime.hour.toString().padLeft(2, '0')}:'
+                                                        '${pickedTime.minute.toString().padLeft(2, '0')}:00';
+                                                    setState(() {
+                                                      end.text= '${pickedTime.hour.toString().padLeft(2, '0')}:'
+                                                          '${pickedTime.minute.toString().padLeft(2, '0')}:00';
+                                                    });
+                                                  }
+                                                },
+                                                controller: end,
+                                                child:    IconButton(
+                                                    onPressed: () {
+
+                                                    },
+                                                    icon: Icon(
+                                                        Icons.access_time_rounded,
+                                                        size: Get.height * 0.022,
+                                                        color: Colors.black)),
+                                              ),
+                                                    SizedBox(
+                                                      height: Get.height * 0.04,
+                                                    ),
+                                              Obx(
+                                                () {
+                                                  return
+                                                    Get.put(UserController()).bookAppoint.value?
+                                                    Container(
+                                                      width: Get.width,
+                                                      child: Center(
+                                                          child: SpinKitThreeBounce(
+                                                              size: 25, color: AppColor.primaryColor1)
+                                                      ),
+                                                    ):
+
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: AppButton(
+                                                            buttonWidth: Get.width,
+                                                            buttonRadius: BorderRadius.circular(10),
+                                                            buttonName: "Close",
+                                                            fontWeight: FontWeight.w500,
+                                                            buttonHeight: Get.height*0.054,
+                                                            textSize: AppSizes.size_15,
+                                                            buttonColor: AppColor.primaryColor,
+                                                            textColor: AppColor.whiteColor,
+                                                            onTap: () {
+                                                              Get.back();
+
+
+
+                                                            }),
+                                                        ),
+                                                        SizedBox(width: Get.width*0.03,),
+                                                        Expanded(
+                                                          child: AppButton(
+                                                              buttonWidth: Get.width,
+                                                              buttonRadius: BorderRadius.circular(10),
+                                                              buttonName: "Book Now",
+                                                              fontWeight: FontWeight.w500,
+                                                              buttonHeight: Get.height*0.054,
+                                                              textSize: AppSizes.size_15,
+                                                              buttonColor: AppColor.primaryColor,
+                                                              textColor: AppColor.whiteColor,
+                                                              onTap: () {
+                                                                if(validateBook(context)){
+                                                                  Get.put(UserController()).updateAppoint(true);
+                                                                  ApiManger().bookAppointmnet(context: context,
+                                                                      gymId: homeController.gymList[index].id.toString(),
+                                                                      end: end.text,
+                                                                      date: date.text
+                                                                  );
+                                                                  print(date.text);
+                                                                  print(end.text);
+                                                                }
+
+
+
+
+                                                              }),
+                                                        ),
+                                                      ],
+                                                    );
+                                                }
+                                              )
+
+                                                  ],
+                                                ),
+                                              ),
+
+                                            ),
+                                          ));
+                                    },
+
                                   );
                                 });
                           }
@@ -333,5 +576,27 @@ class _UserDashboardState extends State<UserDashboard> {
         ],
       ),
     );
+  }
+
+  bool validateBook(BuildContext context) {
+
+
+    if (date.text.isEmpty) {
+      flutterToast(msg: "Please select date");
+      return false;
+    }
+    if (end.text.isEmpty) {
+      flutterToast(msg: "Please select time");
+      return false;
+    }
+
+
+
+
+
+
+
+
+    return true;
   }
 }

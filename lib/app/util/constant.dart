@@ -23,6 +23,10 @@ class AppConstants {
   static const String myEditProfile = 'profile/update_profile_image';
   static const String myProfile = 'profile/get_profile_image';
   static const String rating = 'user/rateGym';
+  static const String book = 'appointments/setAppointment';
+  static const String myAppoint = 'appointments/getMyAppointments';
+  static const String setAvail = 'appointments/setAvailability';
+  static const String myAvail = 'appointments/myAvailability';
 
   static bool isNotification = false;
   static String bidSlug = "";

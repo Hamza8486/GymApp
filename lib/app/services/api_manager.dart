@@ -9,8 +9,10 @@ import 'package:gym_app/app/auth/controller.dart';
 import 'package:gym_app/app/auth/login.dart';
 import 'package:gym_app/app/auth/otp.dart';
 import 'package:gym_app/app/gym/bottom_tabs/dashboard/controller/controller.dart';
+import 'package:gym_app/app/gym/bottom_tabs/dashboard/model/avail_model.dart';
 import 'package:gym_app/app/gym/bottom_tabs/dashboard/model/get_video_model.dart';
 import 'package:gym_app/app/gym/bottom_tabs/dashboard/model/gym_model.dart';
+import 'package:gym_app/app/gym/bottom_tabs/profile/model/appointment_model.dart';
 import 'package:gym_app/app/gym/home/controller/home_controller.dart';
 import 'package:gym_app/app/gym/home/home.dart';
 import 'package:gym_app/app/user/bottom_tabs/map_view/controller/map_controller.dart';
@@ -18,6 +20,8 @@ import 'package:gym_app/app/user/bottom_tabs/user_dashboard/component/filter_gym
 import 'package:gym_app/app/user/bottom_tabs/user_dashboard/model/all.dart';
 import 'package:gym_app/app/user/bottom_tabs/user_dashboard/model/other.dart';
 import 'package:gym_app/app/user/bottom_tabs/user_dashboard/model/profile_model.dart';
+import 'package:gym_app/app/user/bottom_tabs/userprofile/component/my_appointment.dart';
+import 'package:gym_app/app/user/bottom_tabs/userprofile/model/appoint_model.dart';
 import 'package:gym_app/app/user/home/controller/user_controller.dart';
 import 'package:gym_app/app/user/home/user_home.dart';
 import 'package:gym_app/app/util/constant.dart';
@@ -167,7 +171,7 @@ import 'package:image_picker/image_picker.dart';
 
 
 
-  addGymResponse({context}) async {
+  addGymResponse({context,start,end}) async {
     try {
       late dio.MultipartFile x, lisenceFile;
 
@@ -181,6 +185,8 @@ import 'package:image_picker/image_picker.dart';
           'address': Get.put(AuthController()).addressController.text,
           'lat': Get.put(AuthController()).lat.value,
           'long': Get.put(AuthController()).lng.value,
+          'startDate': start.toString(),
+          'endDate': end.toString(),
           'startTime': Get.put(AuthController()).startController.text,
           'endTime': Get.put(AuthController()).endController.text,
           'days':Get.put(GymController()).selectName.join(","),
@@ -229,6 +235,45 @@ import 'package:image_picker/image_picker.dart';
         flutterToast(msg: e.response?.data["message"].toString());
         print(e.response?.statusCode.toString());
         // log("e.response");
+
+
+      }
+    } on dio.DioError catch (e) {
+      Get.put(GymController()).updateLoader(false);
+      print(e.response?.statusCode.toString());
+      flutterToast(msg: e.response?.data["message"].toString());
+      log(e.response.toString());
+    }
+  }
+
+
+  addAvail({required BuildContext context, startDate,startTime,endDate,endTime}) async {
+    try {
+      dio.FormData data = dio.FormData.fromMap({
+        'user_id': Get.put(HomeController()).id.value,
+        'startDate': startDate.toString(),
+        'endDate': endDate.toString(),
+        'startTime': startTime.toString(),
+        'endTime': endTime.toString(),
+        'days': Get.put(GymController()).selectName.join(","),
+
+      });
+      print("Data::::: ${data.fields}");
+      print("Data::::: ${data.fields}");
+      var response = await dio.Dio().post(
+        AppConstants.baseURL + AppConstants.setAvail,
+        data: data,
+      );
+      debugPrint(response.toString());
+      debugPrint(response.statusCode.toString());
+      if (response.statusCode == 200) {
+        Get.back();
+
+        flutterToastSuccess(msg: "Availability Add Successfully!");
+        Get.put(HomeController()).getAvailData();
+        Get.put(GymController()).updateLoader(false);
+
+        print(response.data);
 
 
       }
@@ -371,7 +416,7 @@ import 'package:image_picker/image_picker.dart';
   }
 
 
-  editGymResponse({context,id,edit}) async {
+  editGymResponse({context,id,edit,start,end}) async {
     try {
       late dio.MultipartFile x, lisenceFile;
 
@@ -385,6 +430,8 @@ import 'package:image_picker/image_picker.dart';
           'address': Get.put(AuthController()).addressController.text,
           'lat': Get.put(AuthController()).lat.value,
           'long': Get.put(AuthController()).lng.value,
+          'startDate': start.toString(),
+          'endDate': end.toString(),
           'startTime': Get.put(GymController()).startController.text,
           'types': edit.toString(),
           'endTime': Get.put(GymController()).endController.text,
@@ -586,7 +633,7 @@ import 'package:image_picker/image_picker.dart';
 
 
 
-  static Future<AllGym?> userFilterAllGyms({gend="",sess="",fee="",String time="",String time1="",String day="",String type=""}) async {
+  static Future<AllGym?> userFilterAllGyms({gend="",sess="",fee="",String time="",String time1="",String day="",String type="",String date=""}) async {
     var response = await client.get(
       uriPath(nameUrl:
 
@@ -599,6 +646,7 @@ import 'package:image_picker/image_picker.dart';
           "${time==""?"":"&startTime=${time.toString()}"}"
           "${time1==""?"":"&endTime=${time1.toString()}"}"
           "${type==""?"":"&types=${type.toString()}"}"
+          "${date==""?"":"&appointmentDate=${date.toString()}"}"
       ),
     );
 
@@ -928,6 +976,106 @@ import 'package:image_picker/image_picker.dart';
       print("response.body");
       print(response.body);
       return GetProfileModel.fromJson(jsonString);
+    } else {
+      log(response.statusCode.toString());
+
+      //show error message
+      return null;
+    }
+  }
+
+
+
+  bookAppointmnet({required BuildContext context, gymId,end,date}) async {
+    try {
+      dio.FormData data = dio.FormData.fromMap({
+        'user_id': Get.put(UserController()).id.value,
+        'gym_id': gymId.toString(),
+        'date': date.toString(),
+        'time': end.toString(),
+
+      });
+      print("Data::::: ${data.fields}");
+      print("Data::::: ${data.fields}");
+      var response = await dio.Dio().post(
+        AppConstants.baseURL + AppConstants.book,
+        data: data,
+      );
+      debugPrint(response.toString());
+      debugPrint(response.statusCode.toString());
+      if (response.statusCode == 200) {
+        Get.back();
+
+        flutterToastSuccess(msg: "Appointment Book Successfully!");
+        Get.put(UserController()).updateAppoint(false);
+        Get.put(UserController()).appointData();
+        Get.to(MyAppointmentView());
+        print(response.data);
+
+
+      }
+    } on dio.DioError catch (e) {
+      Get.put(UserController()).updateAppoint(false);
+      flutterToast(msg: e.response?.data["message"].toString());
+      debugPrint("e.response");
+      debugPrint(e.response.toString());
+    }
+  }
+
+
+  static Future<MyAppointmentModel?> myAppointmentModel() async {
+    var response = await client.get(
+      uriPath(nameUrl: "${AppConstants.myAppoint}?user_id=${Get.put(UserController()).id.value}"),
+    );
+    print(response.toString());
+
+    if (response.statusCode == 200) {
+      var jsonString = jsonDecode(response.body);
+      print("response.body");
+      print(response.body);
+      return MyAppointmentModel.fromJson(jsonString);
+    } else {
+      log(response.statusCode.toString());
+
+      //show error message
+      return null;
+    }
+  }
+
+
+
+
+  static Future<GymAppointModel?> getGymAppointModel() async {
+    var response = await client.get(
+      uriPath(nameUrl: "${AppConstants.myAppoint}?user_id=${Get.put(HomeController()).id.value}"),
+    );
+    print(response.toString());
+
+    if (response.statusCode == 200) {
+      var jsonString = jsonDecode(response.body);
+      print("response.body");
+      print(response.body);
+      return GymAppointModel.fromJson(jsonString);
+    } else {
+      log(response.statusCode.toString());
+
+      //show error message
+      return null;
+    }
+  }
+
+
+  static Future<MyAvailModel?> getMyAvailModel() async {
+    var response = await client.get(
+      uriPath(nameUrl: "${AppConstants.myAvail}?user_id=${Get.put(HomeController()).id.value}"),
+    );
+    print(response.toString());
+
+    if (response.statusCode == 200) {
+      var jsonString = jsonDecode(response.body);
+      print("response.body");
+      print(response.body);
+      return MyAvailModel.fromJson(jsonString);
     } else {
       log(response.statusCode.toString());
 

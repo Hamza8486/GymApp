@@ -6,12 +6,12 @@ import 'package:gym_app/app/widgets/app_text.dart';
 import 'package:gym_app/app/widgets/app_textfield.dart';
 import 'package:gym_app/app/widgets/drop_down.dart';
 
-Widget textAuth({text,Color?color}){
+Widget textAuth({text,Color?color,double?height}){
   return Row(
     children: [
       AppText(
         title: "$text",
-        size: AppSizes.size_14,
+        size: height??AppSizes.size_14,
         fontWeight: FontWeight.w400,
         fontFamily: AppFont.medium,
         color: AppColor.boldBlackColor.withOpacity(0.8),

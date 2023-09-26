@@ -4,19 +4,17 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:gym_app/app/gym/bottom_tabs/dashboard/controller/controller.dart';
 import 'package:gym_app/app/gym/bottom_tabs/profile/component/edit_profile.dart';
+import 'package:gym_app/app/gym/bottom_tabs/profile/component/my_availbility.dart';
 import 'package:gym_app/app/gym/bottom_tabs/profile/component/profile_component.dart';
 import 'package:gym_app/app/gym/home/controller/home_controller.dart';
 import 'package:gym_app/app/services/api_manager.dart';
 import 'package:gym_app/app/user/bottom_tabs/userprofile/view/my_profile.dart';
-import 'package:gym_app/app/user/home/controller/user_controller.dart';
 import 'package:gym_app/app/util/theme.dart';
 import 'package:gym_app/app/util/toast.dart';
 import 'package:gym_app/app/widgets/app_text.dart';
 import 'package:gym_app/app/widgets/bottom_sheet.dart';
 import 'package:gym_app/app/widgets/helper_function.dart';
 import 'package:image_picker/image_picker.dart';
-
-
 
 class MyProfile extends StatefulWidget {
   MyProfile({Key? key}) : super(key: key);
@@ -38,7 +36,7 @@ class _MyProfileState extends State<MyProfile> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Material(
-            color:  AppColor.whiteColor,
+            color: AppColor.whiteColor,
             elevation: 1,
             child: SizedBox(
               width: Get.width,
@@ -60,7 +58,7 @@ class _MyProfileState extends State<MyProfile> {
                           fontFamily: AppFont.semi,
                         ),
                         GestureDetector(
-                          onTap: (){
+                          onTap: () {
                             Get.to(EditProfile());
                           },
                           child: Container(
@@ -77,7 +75,6 @@ class _MyProfileState extends State<MyProfile> {
                             ),
                           ),
                         )
-
                       ],
                     ),
                   ),
@@ -88,169 +85,189 @@ class _MyProfileState extends State<MyProfile> {
           SizedBox(
             height: Get.height * 0.01,
           ),
-
-
           SizedBox(
             height: Get.height * 0.005,
           ),
           Expanded(
-              child:  Padding(
-                padding:  EdgeInsets.symmetric(horizontal: Get.width*0.03),
-                child: SingleChildScrollView(
-                  child: Stack(
+              child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: Get.width * 0.03),
+            child: SingleChildScrollView(
+              child: Stack(
+                children: [
+                  Column(
                     children: [
-                      Column(
-                        children: [
-                          SizedBox(
-                            height: Get.height * 0.01,
+                      SizedBox(
+                        height: Get.height * 0.01,
+                      ),
+                      Obx(() {
+                        return profileData(
+                          name: Get.put(HomeController()).name.value.isEmpty
+                              ? ""
+                              : Get.put(HomeController()).name.value,
+                          email: Get.put(HomeController()).email.value,
+                        );
+                      }),
+                      SizedBox(
+                        height: Get.height * 0.03,
+                      ),
+                      profileWidget(
+                        onTap: () {
+                          Get.to(EditProfile());
+                        },
+                        image: "assets/icons/profile.svg",
+                        text: "Edit Profile",
+                      ),
+                      SizedBox(
+                        height: Get.height * 0.025,
+                      ),
+                      Obx(() {
+                        return profileWidget(
+                          onTap: Get.put(HomeController()).name.value.isEmpty
+                              ? () {
+                                  flutterToast(
+                                      msg: "Please Login Your Account");
+                                }
+                              : () {
+                            Get.put(HomeController()).appointGyymData();
+                                  Get.to(GymAppointAll());
+                                },
+                          childs: Container(
+                            height: Get.height * 0.049,
+                            width: Get.height * 0.049,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: AppColor.primaryColor.withOpacity(0.17)),
+                            child: const Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Icon(
+                                  Icons.bookmark_border,
+                                  color: AppColor.primaryColor,
+                                )),
                           ),
-                      Obx(
-                        () {
-                          return profileData(
-                              name:
-                              Get.put(HomeController()).name.value.isEmpty?"":
-                              Get.put(HomeController()).name.value,
-                              email: Get.put(HomeController()).email.value,
+                          image: "assets/icons/profile.svg",
+                          text: "My Appointments",
+                        );
+                      }),
+                      SizedBox(
+                        height: Get.height * 0.035,
+                      ),
+                      logOut(
+                          onTap: () {
+                            setState(() {
+                              showExit(
+                                context: context,
                               );
-                        }
-                      ),
-                          SizedBox(
-                            height: Get.height * 0.03,
-                          ),
-                          profileWidget(
-                            onTap: () {
-                              Get.to(EditProfile());
-
-
-                            },
-                            image: "assets/icons/profile.svg",
-                            text: "Edit Profile",),
-                          SizedBox(
-                            height: Get.height * 0.03,
-                          ),
-
-                          logOut(
-                              onTap: () {
-                                setState(() {
-                                  showExit(
-                                      context: context,
-                                    );
-                                });
-
-                              },
-                              color:
-                              AppColor.primaryColor)
-
-
-                        ],
-                      ),
-                      Positioned(
-                          top: Get.height*0.025,
-                          left: Get.width*0.33,
-                          child:  Obx(
-                            () {
-                              return GestureDetector(
-                                onTap:
-                                Get.put(HomeController()).id.value.isEmpty?(){}:
-
-
-                                    () {
+                            });
+                          },
+                          color: AppColor.primaryColor)
+                    ],
+                  ),
+                  Positioned(
+                      top: Get.height * 0.025,
+                      left: Get.width * 0.33,
+                      child: Obx(() {
+                        return GestureDetector(
+                          onTap: Get.put(HomeController()).id.value.isEmpty
+                              ? () {}
+                              : () {
                                   showModalBottomSheet(
                                       backgroundColor: Colors.transparent,
                                       context: context,
-                                      builder: (builder) => bottomSheet(onCamera: () {
-                                        Navigator.pop(context);
-                                        HelperFunctions.pickImage(ImageSource.camera)
-                                            .then((value) {
-                                          setState(() {
-                                            homeController.myProfile = value!;
-                                            showLoadingIndicator1(context: context);
+                                      builder: (builder) =>
+                                          bottomSheet(onCamera: () {
+                                            Navigator.pop(context);
+                                            HelperFunctions.pickImage(
+                                                    ImageSource.camera)
+                                                .then((value) {
+                                              setState(() {
+                                                homeController.myProfile =
+                                                    value!;
+                                                showLoadingIndicator1(
+                                                    context: context);
 
-                                            ApiManger().editUserResponse1(context: context);
-
-                                          });
-                                        });
-                                      }, onGallery: () {
-                                        Navigator.pop(context);
-                                        HelperFunctions.pickImage(ImageSource.gallery)
-                                            .then((value) {
-                                          setState(() {
-                                            homeController.myProfile= value!;
-                                            showLoadingIndicator1(context: context);
-                                            ApiManger().editUserResponse1(context: context);
-                                          });
-                                        });
-                                      }));
+                                                ApiManger().editUserResponse1(
+                                                    context: context);
+                                              });
+                                            });
+                                          }, onGallery: () {
+                                            Navigator.pop(context);
+                                            HelperFunctions.pickImage(
+                                                    ImageSource.gallery)
+                                                .then((value) {
+                                              setState(() {
+                                                homeController.myProfile =
+                                                    value!;
+                                                showLoadingIndicator1(
+                                                    context: context);
+                                                ApiManger().editUserResponse1(
+                                                    context: context);
+                                              });
+                                            });
+                                          }));
                                 },
-                                child: Center(
-                                  child: Stack(
-                                    children: [
+                          child: Center(
+                            child: Stack(
+                              children: [
+                                Obx(() {
+                                  return Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.14,
+                                    width: MediaQuery.of(context).size.height *
+                                        0.14,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        border: Border.all(
+                                            color: AppColor.primaryColor,
+                                            width: 2)),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: CachedNetworkImage(
+                                        placeholder: (context, url) =>
+                                            const Center(
+                                          child: CircularProgressIndicator(
+                                            backgroundColor: Colors.black26,
+                                            valueColor: AlwaysStoppedAnimation<
+                                                    Color>(
+                                                AppColor
+                                                    .primaryColor //<-- SEE HERE
 
-                                      Obx(
-                                              () {
-                                            return Container(
-                                              height: MediaQuery.of(context).size.height * 0.14,
-                                              width: MediaQuery.of(context).size.height * 0.14,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(100),
-                                                  border: Border.all(color: AppColor.primaryColor,width: 2)
-                                              ),
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(100),
-                                                child: CachedNetworkImage(
-                                                  placeholder: (context, url) =>  const Center(
-                                                    child: CircularProgressIndicator(
-                                                      backgroundColor: Colors.black26,
-                                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                                          AppColor.primaryColor //<-- SEE HERE
-
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  imageUrl: homeController.image.value,
-                                                  fit: homeController.image.value.isEmpty?BoxFit.cover: BoxFit.cover,
-                                                  errorWidget: (context, url, error) =>
-
-                                                      ClipRRect(
-                                                        borderRadius: BorderRadius.circular(100),
-                                                        child:
-
-                                                        Image.asset(
-                                                          'assets/img/gym.jpeg',
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      ),
                                                 ),
-
-
-
-
-
-
-                                              ),
-                                            );
-                                          }
+                                          ),
+                                        ),
+                                        imageUrl: homeController.image.value,
+                                        fit: homeController.image.value.isEmpty
+                                            ? BoxFit.cover
+                                            : BoxFit.cover,
+                                        errorWidget: (context, url, error) =>
+                                            ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                          child: Image.asset(
+                                            'assets/img/gym.jpeg',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
                                       ),
-                                      Positioned(
-                                          bottom: 0,
-                                          right: 0,
-                                          child: Image.asset("assets/img/cam.png",
-
-                                            height: Get.height*0.037,
-                                          ))
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }
-                          ))
-                    ],
-                  ),
-                ),
-              )
-          ),
-
-
+                                    ),
+                                  );
+                                }),
+                                Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: Image.asset(
+                                      "assets/img/cam.png",
+                                      height: Get.height * 0.037,
+                                    ))
+                              ],
+                            ),
+                          ),
+                        );
+                      }))
+                ],
+              ),
+            ),
+          )),
         ],
       ),
     );

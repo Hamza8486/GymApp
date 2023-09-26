@@ -156,6 +156,7 @@ class _MyBookingsState extends State<MyBookings> {
                                         session:homeController.gymMyList[index].sessions ,
                                         price: "${homeController.gymMyList[index].fees.toString()}₣",
                                         days:homeController.gymMyList[index].days.toString() ,
+                                        child2: SizedBox.shrink(),
                                         time:DateFormat.jm().format(DateFormat("hh:mm").parse(homeController.gymMyList[index].startTime??"")),
                                         time1:DateFormat.jm().format(DateFormat("hh:mm").parse(homeController.gymMyList[index].endTime??"")),
 

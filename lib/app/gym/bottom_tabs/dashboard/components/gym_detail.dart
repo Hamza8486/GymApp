@@ -514,7 +514,9 @@ class _GymDetailState extends State<GymDetail> {
 
                                       ],
                                     );
-                                  })):GestureDetector(
+                                  })):
+
+                          GestureDetector(
                             onTap: ()=>pickVideo(),
                             child: Column(
 

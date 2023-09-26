@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:dio/dio.dart';
 
@@ -29,7 +28,9 @@ class NearbyDealsView extends StatefulWidget {
 class _NearbyDealsViewState extends State<NearbyDealsView> {
   final List<Marker> _markers = <Marker>[];
   late BitmapDescriptor customMarker;
-
+  double _startValue = 0.0;
+  double range = 0.0;
+  double startZoomLevel = 14.0;
   late GoogleMapController _controller;
   final CustomInfoWindowController _customInfoWindowController =
       CustomInfoWindowController();
@@ -72,26 +73,6 @@ class _NearbyDealsViewState extends State<NearbyDealsView> {
       return response.data ?? Uint8List(0);
     } catch (e) {
       print('Error fetching image: $e');
-      // Return an empty list or a placeholder image bytes in case of an error
-      return Uint8List(0);
-    }
-  }
-  Future<Uint8List> _resizeNetworkImage(Uint8List bytes, {int width = 48, int height = 48}) async {
-    final originalImage = await decodeImageFromList(bytes);
-    if (originalImage.width < width || originalImage.height < height) {
-      // Image is smaller than the desired minimum size, return the original image
-      return bytes;
-    }
-
-    try {
-      final compressedBytes = await FlutterImageCompress.compressWithList(
-        bytes,
-        minHeight: height,
-        minWidth: width,
-      );
-      return Uint8List.fromList(compressedBytes);
-    } catch (e) {
-      print('Error compressing image: $e');
       // Return an empty list or a placeholder image bytes in case of an error
       return Uint8List(0);
     }
@@ -386,7 +367,7 @@ class _NearbyDealsViewState extends State<NearbyDealsView> {
                     onCameraMove: (position) {
                       _customInfoWindowController.onCameraMove!();
                       if (debounce != null) debounce?.cancel();
-
+                      startZoomLevel = position.zoom;
                       setState(() {
                         debounce = Timer(const Duration(milliseconds: 500), () {
                           _markers.removeRange(1, _markers.length);
@@ -398,9 +379,9 @@ class _NearbyDealsViewState extends State<NearbyDealsView> {
                       });
                     },
                     myLocationEnabled:nearController.isLoading.value?false: false,
-                    initialCameraPosition: const CameraPosition(
+                    initialCameraPosition:  CameraPosition(
                       target: LatLng(37.43296265331129, -122.08832357078792),
-                      zoom: 14.0,
+                      zoom: startZoomLevel,
                     ),
                     onMapCreated: (GoogleMapController controller) {
                       setState(() {
@@ -424,6 +405,7 @@ class _NearbyDealsViewState extends State<NearbyDealsView> {
           ),
         ),
         NearByDealList(),
+
         Positioned(
             top: size.height * 0.08,
             right: size.width * 0.03,
@@ -441,6 +423,75 @@ class _NearbyDealsViewState extends State<NearbyDealsView> {
                     color: AppColor.primaryColor,
                   ),
                 ))),
+        Obx(
+          () {
+            return
+              Get.put(UserController()).name.value.isEmpty?SizedBox.shrink():
+
+
+              Positioned(
+                top: size.height * 0.45,
+                right: size.width * 0.03,
+                left:size.width * 0.03 ,
+                child:  Column(
+                  children: [
+                    SizedBox(height: Get.height*0.025,),
+                    Center(
+                      child: AppText(
+                        title: "Change Zoom Map",
+                        color: AppColor.blackColor,
+                        fontFamily: AppFont.semi,
+                        size: AppSizes.size_16,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: SizedBox(
+                            width: Get.width,
+
+                            child: SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                activeTrackColor: AppColor.secondary1, // Active segment color
+                                inactiveTrackColor: AppColor.secondary, // Inactive segment color
+                                thumbColor: AppColor.secondary1,
+                                overlayColor: AppColor.white,
+                                valueIndicatorColor:AppColor.secondary,
+                              ),
+                              child: Slider(
+                                value: startZoomLevel,
+                                min: 1.0,
+                                max: 20.0,
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    startZoomLevel = newValue;
+                                  });
+
+                                  // Optionally, you can add animation here
+                                  _controller.animateCamera(
+                                    CameraUpdate.zoomTo(newValue),
+                                  );
+                                },
+                                divisions: 100, // Number of divisions
+                                label: "${range.toStringAsFixed(0)}",
+                              ),
+                            ),
+                          ),
+                        ),
+      SizedBox(width: Get.width*0.03,),
+      AppText(
+      title: "${startZoomLevel.toStringAsFixed(0)}",
+      color: AppColor.blackColor,
+      fontFamily: AppFont.semi,
+      size: AppSizes.size_16,
+    ),
+                      ],
+                    ),
+
+                  ],
+                ));
+          }
+        ),
       ],
     ),
       floatingActionButton: Obx(

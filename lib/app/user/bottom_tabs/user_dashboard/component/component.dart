@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:gym_app/app/user/home/controller/user_controller.dart';
 import 'package:gym_app/app/util/theme.dart';
 import 'package:gym_app/app/widgets/app_text.dart';
 
@@ -15,8 +16,10 @@ class HomeDataWidget extends StatelessWidget {
     this.male,this.price,
     this.time,
     this.child1,
+    this.child2,
     this.days,
     this.time1,
+    this.onTap1,
 
   })
       : super(key: key);
@@ -35,8 +38,10 @@ class HomeDataWidget extends StatelessWidget {
 
   var address;
   Widget?child;
+  Widget?child2;
 
   VoidCallback onTap;
+  VoidCallback?  onTap1;
 
 
 
@@ -195,27 +200,50 @@ class HomeDataWidget extends StatelessWidget {
                         height: Get.height * 0.002,
                       ),
                       Divider( color: AppColor.greyColors.withOpacity(0.5),),
-
                       child??
                       SizedBox(
                         height: Get.height * 0.005,
                       ),
                       child??
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
                         children: [
+                          child2??
+                          Obx(() {
+                              return GestureDetector(
+                                onTap:
+                                Get.put(UserController()).name.value.isEmpty?(){}:
 
+                                onTap1,
+                                child: Container(
+                                  decoration: BoxDecoration(
+
+                                      border: Border.all(color: AppColor.primaryColor),
+                                      borderRadius: BorderRadius.circular(6)),
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: Get.width*0.015,vertical: Get.height*0.007),
+                                    child: AppText(
+                                      title: "Set Appointment",
+                                      size: Get.height * 0.011,
+                                      fontFamily: AppFont.semi,
+                                      color: AppColor.blackColor.withOpacity(0.8),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          ),
                           Container(
                             decoration: BoxDecoration(
 
                                 border: Border.all(color: AppColor.primaryColor),
                                 borderRadius: BorderRadius.circular(6)),
                             child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: Get.width*0.027,vertical: Get.height*0.007),
+                              padding: EdgeInsets.symmetric(horizontal: Get.width*0.015,vertical: Get.height*0.007),
                               child: AppText(
-                                title: "See Detail",
-                                size: Get.height * 0.011,
+                                title: "See More",
+                                size: Get.height * 0.01,
                                 fontFamily: AppFont.semi,
                                 color: AppColor.blackColor.withOpacity(0.8),
                               ),

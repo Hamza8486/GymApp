@@ -2,33 +2,42 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:gym_app/app/auth/component.dart';
 import 'package:gym_app/app/auth/controller.dart';
 import 'package:gym_app/app/auth/login.dart';
 import 'package:gym_app/app/gym/bottom_tabs/dashboard/controller/controller.dart';
+import 'package:gym_app/app/services/api_manager.dart';
 import 'package:gym_app/app/user/bottom_tabs/user_dashboard/component/confirm_book.dart';
 import 'package:gym_app/app/user/bottom_tabs/user_dashboard/component/user_detail.dart';
 import 'package:gym_app/app/user/home/controller/user_controller.dart';
 import 'package:gym_app/app/util/theme.dart';
+import 'package:gym_app/app/util/toast.dart';
+import 'package:gym_app/app/widgets/app_button.dart';
 import 'package:gym_app/app/widgets/app_text.dart';
 import 'package:gym_app/app/widgets/bottom_sheet.dart';
-import 'package:gym_app/app/widgets/helper_function.dart';
 import 'package:intl/intl.dart';
 
 
-class NearByDealList extends StatelessWidget {
+class NearByDealList extends StatefulWidget {
    NearByDealList({Key? key }) : super(key: key);
 
+  @override
+  State<NearByDealList> createState() => _NearByDealListState();
+}
+
+class _NearByDealListState extends State<NearByDealList> {
    final nearController = Get.put(UserController());
-
-
+   TextEditingController end = TextEditingController();
+   TextEditingController date = TextEditingController();
+   final FocusNode _focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
 
     var size = Get.size;
     return DraggableScrollableSheet(
-      initialChildSize: 0.45,
-      minChildSize: 0.45,
-      maxChildSize: 0.45,
+      initialChildSize: 0.5,
+      minChildSize: 0.5,
+      maxChildSize: 0.5,
       builder: (_, controller) => Container(
         decoration: BoxDecoration(
           color: AppColor.whiteColor,
@@ -41,8 +50,13 @@ class NearByDealList extends StatelessWidget {
           child: Column(
             children: [
 
-              SizedBox(
-                height: Get.height * 0.025,
+              Obx(
+                () {
+                  return
+                    Get.put(UserController()).name.value.isEmpty?
+
+                    SizedBox(height: Get.height*0.025,): SizedBox(height: Get.height*0.07,);
+                }
               ),
 
               Padding(
@@ -61,7 +75,7 @@ class NearByDealList extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: size.height * 0.02,
+                height: size.height * 0.01,
               ),
     Obx(
     () {
@@ -102,6 +116,7 @@ class NearByDealList extends StatelessWidget {
                   ],
                 )
                 :
+
                 ListView.builder(
                     shrinkWrap: true,
                     primary: false,
@@ -152,6 +167,7 @@ class NearByDealList extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Row(
 
@@ -167,8 +183,8 @@ class NearByDealList extends StatelessWidget {
                                                     ),
                                                   ),
                                                   imageUrl: nearController.mapList[index].img??"",
-                                                  height: Get.height * 0.1,
-                                                  width: Get.height * 0.1,
+                                                  height: Get.height * 0.08,
+                                                  width: Get.height * 0.08,
                                                   memCacheWidth: 180,
                                                   memCacheHeight: 180,
                                                   fit: BoxFit.cover,
@@ -177,8 +193,8 @@ class NearByDealList extends StatelessWidget {
                                                     borderRadius: BorderRadius.circular(10),
                                                     child: Image.asset(
                                                       "assets/img/gym.jpeg",
-                                                      height: Get.height * 0.1,
-                                                      width: Get.height * 0.1,
+                                                      height: Get.height * 0.08,
+                                                      width: Get.height * 0.08,
                                                       fit: BoxFit.cover,
                                                     ),
                                                   )
@@ -231,7 +247,7 @@ class NearByDealList extends StatelessWidget {
                                                       ],
                                                     ),
                                                     SizedBox(
-                                                      height: Get.height * 0.006,
+                                                      height: Get.height * 0.004,
                                                     ),
 
                                                     Row(
@@ -255,7 +271,7 @@ class NearByDealList extends StatelessWidget {
                                                       ],
                                                     ),
                                                     SizedBox(
-                                                      height: Get.height * 0.007,
+                                                      height: Get.height * 0.004,
                                                     ),
                                                     Row(
                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -304,6 +320,253 @@ class NearByDealList extends StatelessWidget {
                                             )
                                           ],
                                         ),
+                                        // SizedBox(height: Get.height*0.012,),
+                                        // GestureDetector(
+                                        //   onTap: (){
+                                        //     setState(() {
+                                        //       end.clear();
+                                        //       date.clear();
+                                        //     });
+                                        //
+                                        //     Get.generalDialog(
+                                        //         barrierDismissible: false,
+                                        //         pageBuilder: (context, __, ___) => WillPopScope(
+                                        //           onWillPop: () async {
+                                        //             // Handle the back button press event
+                                        //             return true; // Return false to prevent dialog from closing
+                                        //           },
+                                        //           child: AlertDialog(
+                                        //
+                                        //             content: SizedBox(
+                                        //               height: Get.height*0.35,
+                                        //               child: Column(
+                                        //                 crossAxisAlignment: CrossAxisAlignment.start,
+                                        //                 children: [
+                                        //                   Center(
+                                        //                     child: AppText(
+                                        //                       title: "Book Appointment",
+                                        //                       size: AppSizes.size_16,
+                                        //                       fontWeight: FontWeight.w400,
+                                        //                       fontFamily: AppFont.semi,
+                                        //                       color: AppColor.boldBlackColor.withOpacity(0.8),
+                                        //                     ),
+                                        //                   ),
+                                        //                   SizedBox(
+                                        //                     height: Get.height * 0.02,
+                                        //                   ),
+                                        //                   textAuth(text: "Select Date",color: Colors.transparent),
+                                        //                   SizedBox(
+                                        //                     height: Get.height * 0.01,
+                                        //                   ),
+                                        //                   betField(
+                                        //
+                                        //                     hint: "Select Date",
+                                        //                     textInputType: TextInputType.visiblePassword,
+                                        //                     textInputAction: TextInputAction.done,
+                                        //                     isRead: true,
+                                        //                     cur: false,
+                                        //                     focusNode: _focusNode,
+                                        //                     onChange: (val){
+                                        //                       setState(() {
+                                        //
+                                        //                       });
+                                        //                     },
+                                        //
+                                        //                     onTap: () async{
+                                        //                       DateTime? pickedDate = await showDatePicker(
+                                        //                           context: context,
+                                        //                           initialEntryMode: DatePickerEntryMode.calendarOnly,
+                                        //
+                                        //                           builder: (BuildContext? context,
+                                        //                               Widget? child) {
+                                        //                             return Center(
+                                        //                                 child: Container(
+                                        //                                   decoration: BoxDecoration(
+                                        //                                       borderRadius:
+                                        //                                       BorderRadius.circular(20)),
+                                        //                                   width: 350.0,
+                                        //                                   height: 500.0,
+                                        //                                   child: Theme(
+                                        //                                     data: ThemeData.light().copyWith(
+                                        //                                       primaryColor:
+                                        //                                       AppColor.blackColor,
+                                        //                                       accentColor:
+                                        //                                       AppColor.blackColor,
+                                        //                                       colorScheme: ColorScheme.light(
+                                        //                                         primary:
+                                        //                                         AppColor.blackColor,),
+                                        //                                       buttonTheme: ButtonThemeData(
+                                        //                                           buttonColor:
+                                        //                                           AppColor.primaryColor),
+                                        //                                     ),
+                                        //                                     child: child!,
+                                        //                                   ),
+                                        //                                 ));
+                                        //                           },
+                                        //                           initialDate: DateTime.now(),
+                                        //                           firstDate: DateTime.now(),
+                                        //                           lastDate: DateTime(2050));
+                                        //
+                                        //                       if (pickedDate != null) {
+                                        //                         date.text =
+                                        //                             DateFormat('yyyy-MM-dd')
+                                        //                                 .format(pickedDate);
+                                        //                       }
+                                        //                     },
+                                        //                     controller: date,
+                                        //                     child:    IconButton(
+                                        //                         onPressed: () {
+                                        //
+                                        //                         },
+                                        //                         icon: Icon(
+                                        //                             Icons.calendar_month,
+                                        //                             size: Get.height * 0.022,
+                                        //                             color: Colors.black)),
+                                        //                   ),
+                                        //                   SizedBox(
+                                        //                     height: Get.height * 0.02,
+                                        //                   ),
+                                        //                   textAuth(text: "Select time",color: Colors.transparent),
+                                        //                   SizedBox(
+                                        //                     height: Get.height * 0.01,
+                                        //                   ),
+                                        //                   betField(
+                                        //
+                                        //                     hint: "Select time",
+                                        //                     textInputType: TextInputType.visiblePassword,
+                                        //                     textInputAction: TextInputAction.done,
+                                        //                     isRead: true,
+                                        //                     cur: false,
+                                        //                     focusNode: _focusNode,
+                                        //                     onChange: (val){
+                                        //                       setState(() {
+                                        //
+                                        //                       });
+                                        //                     },
+                                        //
+                                        //                     onTap: ()async{
+                                        //
+                                        //                       final TimeOfDay? pickedTime = await showTimePicker(
+                                        //                         context: context,
+                                        //                         initialTime: TimeOfDay.now(),
+                                        //                         builder: (BuildContext context, Widget? child) {
+                                        //                           return MediaQuery(
+                                        //                             data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                        //                             child: child!,
+                                        //                           );
+                                        //                         },
+                                        //                       );
+                                        //
+                                        //                       if (pickedTime != null) {
+                                        //                         final String formattedTime =
+                                        //                             '${pickedTime.hour.toString().padLeft(2, '0')}:'
+                                        //                             '${pickedTime.minute.toString().padLeft(2, '0')}:00';
+                                        //                         setState(() {
+                                        //                           end.text= '${pickedTime.hour.toString().padLeft(2, '0')}:'
+                                        //                               '${pickedTime.minute.toString().padLeft(2, '0')}:00';
+                                        //                         });
+                                        //                       }
+                                        //                     },
+                                        //                     controller: end,
+                                        //                     child:    IconButton(
+                                        //                         onPressed: () {
+                                        //
+                                        //                         },
+                                        //                         icon: Icon(
+                                        //                             Icons.access_time_rounded,
+                                        //                             size: Get.height * 0.022,
+                                        //                             color: Colors.black)),
+                                        //                   ),
+                                        //                   SizedBox(
+                                        //                     height: Get.height * 0.04,
+                                        //                   ),
+                                        //                   Obx(
+                                        //                           () {
+                                        //                         return
+                                        //                           Get.put(UserController()).bookAppoint.value?
+                                        //                           Container(
+                                        //                             width: Get.width,
+                                        //                             child: Center(
+                                        //                                 child: SpinKitThreeBounce(
+                                        //                                     size: 25, color: AppColor.primaryColor1)
+                                        //                             ),
+                                        //                           ):
+                                        //
+                                        //                           Row(
+                                        //                             children: [
+                                        //                               Expanded(
+                                        //                                 child: AppButton(
+                                        //                                     buttonWidth: Get.width,
+                                        //                                     buttonRadius: BorderRadius.circular(10),
+                                        //                                     buttonName: "Close",
+                                        //                                     fontWeight: FontWeight.w500,
+                                        //                                     buttonHeight: Get.height*0.054,
+                                        //                                     textSize: AppSizes.size_15,
+                                        //                                     buttonColor: AppColor.primaryColor,
+                                        //                                     textColor: AppColor.whiteColor,
+                                        //                                     onTap: () {
+                                        //                                       Get.back();
+                                        //
+                                        //
+                                        //
+                                        //                                     }),
+                                        //                               ),
+                                        //                               SizedBox(width: Get.width*0.03,),
+                                        //                               Expanded(
+                                        //                                 child: AppButton(
+                                        //                                     buttonWidth: Get.width,
+                                        //                                     buttonRadius: BorderRadius.circular(10),
+                                        //                                     buttonName: "Book Now",
+                                        //                                     fontWeight: FontWeight.w500,
+                                        //                                     buttonHeight: Get.height*0.054,
+                                        //                                     textSize: AppSizes.size_15,
+                                        //                                     buttonColor: AppColor.primaryColor,
+                                        //                                     textColor: AppColor.whiteColor,
+                                        //                                     onTap: () {
+                                        //                                       if(validateBook(context)){
+                                        //                                         Get.put(UserController()).updateAppoint(true);
+                                        //                                         ApiManger().bookAppointmnet(context: context,
+                                        //                                             gymId: nearController.mapList[index].id.toString(),
+                                        //                                             end: end.text,
+                                        //                                             date: date.text
+                                        //                                         );
+                                        //                                         print(date.text);
+                                        //                                         print(end.text);
+                                        //                                       }
+                                        //
+                                        //
+                                        //
+                                        //
+                                        //                                     }),
+                                        //                               ),
+                                        //                             ],
+                                        //                           );
+                                        //                       }
+                                        //                   )
+                                        //
+                                        //                 ],
+                                        //               ),
+                                        //             ),
+                                        //
+                                        //           ),
+                                        //         ));
+                                        //   },
+                                        //   child: Container(
+                                        //     width: Get.height*0.15,
+                                        //     height: Get.height*0.042,
+                                        //     decoration: BoxDecoration(
+                                        //         color:  AppColor.primaryColor,
+                                        //         borderRadius: BorderRadius.circular(10)),
+                                        //     child: Center(
+                                        //       child: AppText(
+                                        //         title: "Set Appointment",
+                                        //         size: Get.height * 0.014,
+                                        //         fontFamily: AppFont.medium,
+                                        //         color: AppColor.whiteColor,
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // ),
 
                                       ],
                                     ),
@@ -329,6 +592,27 @@ class NearByDealList extends StatelessWidget {
       ),
     );
   }
+   bool validateBook(BuildContext context) {
+
+
+     if (date.text.isEmpty) {
+       flutterToast(msg: "Please select date");
+       return false;
+     }
+     if (end.text.isEmpty) {
+       flutterToast(msg: "Please select time");
+       return false;
+     }
+
+
+
+
+
+
+
+
+     return true;
+   }
 }
 
 

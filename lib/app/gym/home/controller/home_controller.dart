@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:gym_app/app/gym/bottom_tabs/dashboard/model/avail_model.dart';
 import 'package:gym_app/app/gym/bottom_tabs/dashboard/model/gym_model.dart';
 import 'package:gym_app/app/services/api_manager.dart';
 import 'package:gym_app/app/widgets/helper_function.dart';
@@ -28,7 +29,10 @@ class HomeController extends GetxController {
 
 
   }
+
+  AvailData ? availData;
   var loader = false.obs;
+  var availloader = false.obs;
   var loaderVideo = false.obs;
   var loaderDeleteVideo = false.obs;
   updateVideoLoader(val){
@@ -68,6 +72,8 @@ class HomeController extends GetxController {
       print(id.value.toString());
       getData();
       imageData();
+      getAvailData();
+      appointGyymData();
 
       update();
     });
@@ -112,6 +118,34 @@ class HomeController extends GetxController {
   var getVideoList = [].obs;
   var isLoading = false.obs;
   var isVideoLoading = false.obs;
+
+
+  getAvailData() async {
+    try {
+      availloader(true);
+      update();
+
+      var profData = await ApiManger.getMyAvailModel();
+      if (profData != null) {
+        availData = profData.data as dynamic;
+        print(
+            "This is avail ${profData.data}");
+      } else {
+        availloader(false);
+        update();
+      }
+    } catch (e) {
+      availloader(false);
+      update();
+      debugPrint(e.toString());
+    } finally {
+      availloader(false);
+      update();
+    }
+    update();
+  }
+
+
   getData() async {
     try {
       isLoading(true);
@@ -189,5 +223,35 @@ class HomeController extends GetxController {
     }
     update();
   }
+
+
+  var gymAppoint = false.obs;
+  var gymAppointList = [].obs;
+
+  appointGyymData() async {
+    try {
+      gymAppoint(true);
+      update();
+
+      var profData = await ApiManger.getGymAppointModel();
+      if (profData != null) {
+        gymAppointList.value = profData.data as dynamic;
+        print(
+            "This is appointmentData ${profData.data?.length}");
+      } else {
+        gymAppoint(false);
+        update();
+      }
+    } catch (e) {
+      gymAppoint(false);
+      update();
+      debugPrint(e.toString());
+    } finally {
+      gymAppoint(false);
+      update();
+    }
+    update();
+  }
+
 }
 

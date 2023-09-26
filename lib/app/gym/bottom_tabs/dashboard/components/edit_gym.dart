@@ -20,6 +20,7 @@ import 'package:gym_app/app/widgets/app_text.dart';
 import 'package:gym_app/app/widgets/helper_function.dart';
 import 'package:gym_app/app/widgets/image_pick.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../auth/component.dart';
 
@@ -35,6 +36,8 @@ class EditGym extends StatefulWidget {
 class _EditGymState extends State<EditGym> {
   final gymController = Get.put(GymController());
   var typesController = TextEditingController();
+  var startDate= TextEditingController();
+  var endDate= TextEditingController();
 
   @override
   void initState() {
@@ -47,6 +50,8 @@ class _EditGymState extends State<EditGym> {
     gymController.updateWeek4(widget.data.days.contains("Thu")?"Thu":"");
     gymController.updateWeek5(widget.data.days.contains("Fri")?"Fri":"");
     gymController.updateWeek6(widget.data.days.contains("Sat")?"Sat":"");
+    startDate.text=widget.data.startDate==null?"":widget.data.startDate;
+    endDate.text=widget.data.endDate==null?"":widget.data.endDate;
     gymController.nameEditController.text=widget.data.name;
     gymController.startController.text=widget.data.startTime;
     typesController.text=widget.data.types==null?"":widget.data.types;
@@ -449,6 +454,179 @@ class _EditGymState extends State<EditGym> {
                             height: Get.height * 0.02,
                           ),
 
+                          SizedBox(
+                            height: Get.height * 0.02,
+                          ),
+
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+
+                                    textAuth(text: "Appointment Start Date",
+                                        height:AppSizes.size_13
+                                    ),
+                                    SizedBox(
+                                      height: Get.height * 0.012,
+                                    ),
+
+                                    betField(
+
+                                      hint: "Start Date",
+                                      textInputType: TextInputType.visiblePassword,
+                                      textInputAction: TextInputAction.done,
+                                      isRead: true,
+                                      cur: false,
+                                      focusNode: _focusNode,
+                                      onChange: (val){
+                                        setState(() {
+
+                                        });
+                                      },
+
+                                      onTap: () async{
+                                        DateTime? pickedDate = await showDatePicker(
+                                            context: context,
+                                            initialEntryMode: DatePickerEntryMode.calendarOnly,
+
+                                            builder: (BuildContext? context,
+                                                Widget? child) {
+                                              return Center(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                        BorderRadius.circular(20)),
+                                                    width: 350.0,
+                                                    height: 500.0,
+                                                    child: Theme(
+                                                      data: ThemeData.light().copyWith(
+                                                        primaryColor:
+                                                        AppColor.blackColor,
+                                                        accentColor:
+                                                        AppColor.blackColor,
+                                                        colorScheme: ColorScheme.light(
+                                                          primary:
+                                                          AppColor.blackColor,),
+                                                        buttonTheme: ButtonThemeData(
+                                                            buttonColor:
+                                                            AppColor.primaryColor),
+                                                      ),
+                                                      child: child!,
+                                                    ),
+                                                  ));
+                                            },
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime.now(),
+                                            lastDate: DateTime(2050));
+
+                                        if (pickedDate != null) {
+                                          startDate.text =
+                                              DateFormat('yyyy-MM-dd')
+                                                  .format(pickedDate);
+                                        }
+                                      },
+                                      controller: startDate,
+                                      child:    IconButton(
+                                          onPressed: () {
+
+                                          },
+                                          icon: Icon(
+                                              Icons.calendar_month,
+                                              size: Get.height * 0.022,
+                                              color: Colors.black)),
+                                    ),
+
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: Get.width*0.04,),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+
+                                    textAuth( text: "Appointment End Date",
+                                        height:AppSizes.size_13),
+                                    SizedBox(
+                                      height: Get.height * 0.012,
+                                    ),
+
+
+                                    betField(
+
+                                      hint: "End Date",
+                                      textInputType: TextInputType.visiblePassword,
+                                      textInputAction: TextInputAction.done,
+                                      isRead: true,
+                                      cur: false,
+                                      focusNode: _focusNode,
+                                      onChange: (val){
+                                        setState(() {
+
+                                        });
+                                      },
+
+                                      onTap: () async{
+                                        DateTime? pickedDate = await showDatePicker(
+                                            context: context,
+                                            initialEntryMode: DatePickerEntryMode.calendarOnly,
+
+                                            builder: (BuildContext? context,
+                                                Widget? child) {
+                                              return Center(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                        BorderRadius.circular(20)),
+                                                    width: 350.0,
+                                                    height: 500.0,
+                                                    child: Theme(
+                                                      data: ThemeData.light().copyWith(
+                                                        primaryColor:
+                                                        AppColor.blackColor,
+                                                        accentColor:
+                                                        AppColor.blackColor,
+                                                        colorScheme: ColorScheme.light(
+                                                          primary:
+                                                          AppColor.blackColor,),
+                                                        buttonTheme: ButtonThemeData(
+                                                            buttonColor:
+                                                            AppColor.primaryColor),
+                                                      ),
+                                                      child: child!,
+                                                    ),
+                                                  ));
+                                            },
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime.now(),
+                                            lastDate: DateTime(2050));
+
+                                        if (pickedDate != null) {
+                                          endDate.text =
+                                              DateFormat('yyyy-MM-dd')
+                                                  .format(pickedDate);
+                                        }
+                                      },
+                                      controller: endDate,
+                                      child:    IconButton(
+                                          onPressed: () {
+
+                                          },
+                                          icon: Icon(
+                                              Icons.calendar_month,
+                                              size: Get.height * 0.022,
+                                              color: Colors.black)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: Get.height * 0.02,
+                          ),
 
                           Row(
                             children: [
@@ -696,7 +874,8 @@ class _EditGymState extends State<EditGym> {
                       if(validateGym(context)){
                         gymController.updateLoader1(true);
                         ApiManger().editGymResponse(context: context,id: widget.data.id.toString(),
-                        edit: typesController.text
+                        edit: typesController.text,
+                          start: startDate.text,end: endDate.text
                         );
                       }
 
@@ -752,6 +931,14 @@ class _EditGymState extends State<EditGym> {
 
     if (Get.put(AuthController()).addressController.text.isEmpty) {
       flutterToast(msg: "Please select address");
+      return false;
+    }
+    if (startDate.text.isEmpty) {
+      flutterToast(msg: "Please select start date");
+      return false;
+    }
+    if (endDate.text.isEmpty) {
+      flutterToast(msg: "Please select end date");
       return false;
     }
 

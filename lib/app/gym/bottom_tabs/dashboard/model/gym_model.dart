@@ -55,6 +55,8 @@ class Data {
   String? img;
   var rating;
   var totalRatings;
+  String? startDate;
+  String? endDate;
 
 
   Data(
@@ -73,6 +75,8 @@ class Data {
         this.types,
         this.img,
         this.rating,
+        this.startDate,
+        this.endDate,
         this.totalRatings});
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -91,6 +95,8 @@ class Data {
     types = json['types'];
     img = json['img'];
     rating = json['rating'];
+    startDate = json['startDate'];
+    endDate = json['endDate'];
     totalRatings = json['total_ratings'];
   }
 
@@ -111,6 +117,8 @@ class Data {
     data['types'] = this.types;
     data['img'] = this.img;
     data['rating'] = this.rating;
+    data['startDate'] = this.startDate;
+    data['endDate'] = this.endDate;
     data['total_ratings'] = this.totalRatings;
     return data;
   }

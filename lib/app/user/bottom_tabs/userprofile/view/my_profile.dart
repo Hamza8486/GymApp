@@ -7,6 +7,7 @@ import 'package:gym_app/app/auth/login.dart';
 import 'package:gym_app/app/gym/bottom_tabs/profile/component/profile_component.dart';
 import 'package:gym_app/app/services/api_manager.dart';
 import 'package:gym_app/app/user/bottom_tabs/userprofile/component/edit_profile.dart';
+import 'package:gym_app/app/user/bottom_tabs/userprofile/component/my_appointment.dart';
 import 'package:gym_app/app/user/bottom_tabs/userprofile/component/my_bookings.dart';
 import 'package:gym_app/app/user/home/controller/user_controller.dart';
 import 'package:gym_app/app/util/theme.dart';
@@ -174,6 +175,39 @@ class _UserProfileState extends State<UserProfile> {
                                 image: "assets/icons/profile.svg",
                                 text: "My Bookings",);
                             }
+                          ),
+                          SizedBox(
+                            height: Get.height * 0.025,
+                          ),
+                          Obx(
+                                  () {
+                                return profileWidget(
+                                  onTap:
+                                  Get.put(UserController()).name.value.isEmpty?(){
+                                    flutterToast(msg: "Please Login Your Account");
+                                  }:
+                                      () {
+                                    Get.put(UserController()).appointData();
+                                    Get.to(MyAppointmentView(),
+                                        transition: Transition.rightToLeft
+                                    );
+
+
+                                  },
+                                  childs: Container(
+                                    height: Get.height * 0.049,
+                                    width: Get.height * 0.049,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: AppColor.primaryColor.withOpacity(0.17)),
+                                    child: const Padding(
+                                        padding: EdgeInsets.all(10.0),
+                                        child: Icon(Icons.bookmark_border,color: AppColor.primaryColor,)
+                                    ),
+                                  ),
+                                  image: "assets/icons/profile.svg",
+                                  text: "My Appointment",);
+                              }
                           ),
                           SizedBox(
                             height: Get.height * 0.035,

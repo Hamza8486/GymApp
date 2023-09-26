@@ -6,6 +6,7 @@ import 'package:gym_app/app/gym/bottom_tabs/dashboard/model/gym_model.dart';
 import 'package:gym_app/app/services/api_manager.dart';
 import 'package:gym_app/app/user/bottom_tabs/user_dashboard/model/all.dart';
 import 'package:gym_app/app/user/bottom_tabs/user_dashboard/model/other.dart';
+import 'package:gym_app/app/user/bottom_tabs/userprofile/model/appoint_model.dart';
 import 'package:gym_app/app/widgets/helper_function.dart';
 
 
@@ -14,6 +15,14 @@ class UserController extends GetxController {
   var isValue = true.obs;
   updateLoader(val){
     loader.value = val;
+    update();
+
+
+  }
+
+  var bookAppoint = false.obs;
+  updateAppoint(val){
+    bookAppoint.value = val;
     update();
 
 
@@ -113,6 +122,7 @@ class UserController extends GetxController {
       print(id.value.toString());
       getMyData();
       imageData();
+      appointData();
 
       update();
     });
@@ -168,6 +178,7 @@ class UserController extends GetxController {
   }
   var slot="".obs;
   File?file;
+  var appointmnetList = <AppointmentListModel>[].obs;
   var gymList = <AllData>[].obs;
   var gymMyList = <AllData>[].obs;
   var mapList = <AllData>[].obs;
@@ -177,7 +188,35 @@ class UserController extends GetxController {
   var isMyLoading = false.obs;
   var isMapLoading = false.obs;
   var isOtherLoading = false.obs;
+  var isAppointLoading = false.obs;
   var filterLoading = false.obs;
+
+  appointData() async {
+    try {
+      isAppointLoading(true);
+      update();
+
+      var profData = await ApiManger.myAppointmentModel();
+      if (profData != null) {
+        appointmnetList.value = profData.data as dynamic;
+        print(
+            "This is appointmentData ${profData.data?.length}");
+      } else {
+        isAppointLoading(false);
+        update();
+      }
+    } catch (e) {
+      isAppointLoading(false);
+      update();
+      debugPrint(e.toString());
+    } finally {
+      isAppointLoading(false);
+      update();
+    }
+    update();
+  }
+
+
   getData() async {
     try {
       isLoading(true);
@@ -312,13 +351,14 @@ class UserController extends GetxController {
 
 
 
-  getFilterData({sessions="",gendar="",fees="",String day="",String time1="",String time="",String type=""}) async {
+  getFilterData({sessions="",gendar="",fees="",String day="",String time1="",String time="",String type="",String date=""}) async {
     try {
       filterLoading(true);
       update();
 
       var profData = await ApiManger.userFilterAllGyms(sess: sessions.toString(),fee: fees.toString(),gend: gendar.toString(),
       time1: time1,day: day,time: time,
+        date: date,
         type: type.toString()
       );
       if (profData != null) {
