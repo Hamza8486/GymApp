@@ -33,6 +33,8 @@ class _AddGymState extends State<AddGym> {
   final gymController = Get.put(GymController());
   var startDate= TextEditingController();
   var endDate= TextEditingController();
+  String ? maleType;
+  String ? sessionType;
   @override
   void initState() {
     // TODO: implement initState
@@ -153,27 +155,73 @@ class _AddGymState extends State<AddGym> {
                           ),
                           textAuth(text: "Sessions"),
                           SizedBox(
-                            height: Get.height * 0.01,
+                            height: Get.height * 0.015,
                           ),
-                          SizedBox(
-                              width: Get.width,
-                              child: Obx(() {
-                                return dropDownAppAdd(
-                                  hint: "Select session type",
-                                  width: Get.width * 0.92,
-                                  items: [
-                                    "Solo",
-                                    "Group",
-
-                                  ],
-                                  value:gymController.sessionName.value.isEmpty?null:gymController.sessionName.value,
-                                  onChange: (value) {
-                                    gymController.updateSessions(value.toString());
+                          Row(
 
 
-                                  },
-                                );
-                              })),
+                            children: [
+
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    sessionType="Solo";
+                                  });
+                                },
+                                child: Container(
+                                  color: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      sessionType=="Solo"?
+                                      Icon(Icons.radio_button_checked,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ):Icon(Icons.radio_button_off,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ),
+                                      SizedBox(width: Get.width*0.015,),
+                                      AppText(
+                                        title: "Solo",
+                                        size: AppSizes.size_15,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: AppFont.medium,
+                                        color: AppColor.boldBlackColor,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: Get.width*0.06,),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    sessionType="Group";
+                                  });
+                                },
+                                child: Container(
+                                  color: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      sessionType=="Group"?
+                                      Icon(Icons.radio_button_checked,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ):Icon(Icons.radio_button_off,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ),
+                                      SizedBox(width: Get.width*0.015,),
+                                      AppText(
+                                        title: "Group",
+                                        size: AppSizes.size_15,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: AppFont.medium,
+                                        color: AppColor.boldBlackColor,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            ],
+                          ),
 
 
                           SizedBox(
@@ -181,28 +229,72 @@ class _AddGymState extends State<AddGym> {
                           ),
                           textAuth(text: "Gender"),
                           SizedBox(
-                            height: Get.height * 0.01,
+                            height: Get.height * 0.015,
                           ),
-                          SizedBox(
-                              width: Get.width,
-                              child: Obx(() {
-                                return dropDownAppAdd(
-                                  hint: "Select gender",
-                                  width: Get.width * 0.92,
-                                  items: [
-                                    "Male",
-                                    "Female",
+                          Row(
 
+                            children: [
 
-                                  ],
-                                  value:gymController.gendarName.value.isEmpty?null:gymController.gendarName.value,
-                                  onChange: (value) {
-                                    gymController.updateGender(value.toString());
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    maleType="Male";
+                                  });
+                                },
+                                child: Container(
+                                  color: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      maleType=="Male"?
+                                      Icon(Icons.radio_button_checked,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ):Icon(Icons.radio_button_off,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ),
+                                      SizedBox(width: Get.width*0.015,),
+                                      AppText(
+                                        title: "Male",
+                                        size: AppSizes.size_15,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: AppFont.medium,
+                                        color: AppColor.boldBlackColor,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: Get.width*0.06,),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    maleType="Female";
+                                  });
+                                },
+                                child: Container(
+                                  color: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      maleType=="Female"?
+                                      Icon(Icons.radio_button_checked,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ):Icon(Icons.radio_button_off,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ),
+                                      SizedBox(width: Get.width*0.015,),
+                                      AppText(
+                                        title: "Female",
+                                        size: AppSizes.size_15,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: AppFont.medium,
+                                        color: AppColor.boldBlackColor,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
 
-
-                                  },
-                                );
-                              })),
+                            ],
+                          ),
                           SizedBox(
                             height: Get.height * 0.02,
                           ),
@@ -519,8 +611,7 @@ class _AddGymState extends State<AddGym> {
                                                       data: ThemeData.light().copyWith(
                                                         primaryColor:
                                                         AppColor.blackColor,
-                                                        accentColor:
-                                                        AppColor.blackColor,
+
                                                         colorScheme: ColorScheme.light(
                                                           primary:
                                                           AppColor.blackColor,),
@@ -601,8 +692,7 @@ class _AddGymState extends State<AddGym> {
                                                       data: ThemeData.light().copyWith(
                                                         primaryColor:
                                                         AppColor.blackColor,
-                                                        accentColor:
-                                                        AppColor.blackColor,
+
                                                         colorScheme: ColorScheme.light(
                                                           primary:
                                                           AppColor.blackColor,),
@@ -912,7 +1002,9 @@ class _AddGymState extends State<AddGym> {
                         gymController.updateLoader(true);
                         ApiManger().addGymResponse(context: context,
                         start: startDate.text,
-                          end: endDate.text
+                          end: endDate.text,
+                          gender: maleType.toString(),
+                          session: sessionType.toString()
                         );
                       }
 
@@ -953,11 +1045,11 @@ class _AddGymState extends State<AddGym> {
       flutterToast(msg: "Please enter gym name");
       return false;
     }
-    if (Get.put(GymController()).sessionName.isEmpty) {
+    if (sessionType==null) {
       flutterToast(msg: "Please select session type");
       return false;
     }
-    if (Get.put(GymController()).gendarName.isEmpty) {
+    if (maleType==null) {
       flutterToast(msg: "Please select gender type");
       return false;
     }

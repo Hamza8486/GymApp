@@ -171,7 +171,7 @@ import 'package:image_picker/image_picker.dart';
 
 
 
-  addGymResponse({context,start,end}) async {
+  addGymResponse({context,start,end,session,gender}) async {
     try {
       late dio.MultipartFile x, lisenceFile;
 
@@ -179,9 +179,9 @@ import 'package:image_picker/image_picker.dart';
         dio.FormData data = dio.FormData.fromMap({
           'user_id': Get.put(HomeController()).id.value,
           'gymName': Get.put(GymController()).nameController.text,
-          'sessionType':Get.put(GymController()).sessionName.value,
+          'sessionType':session.toString(),
           'fee':Get.put(GymController()).feeController.text,
-          'gender': Get.put(GymController()).gendarName.value,
+          'gender': gender.toString(),
           'address': Get.put(AuthController()).addressController.text,
           'lat': Get.put(AuthController()).lat.value,
           'long': Get.put(AuthController()).lng.value,

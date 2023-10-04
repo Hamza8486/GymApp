@@ -607,12 +607,17 @@ class _UserGymDetailState extends State<UserGymDetail> {
                      fontFamily: AppFont.medium,
                      size: AppSizes.size_15,
                    ),
-                   AppText(
-                     title: "₣ ${widget.data.fees.toString()}",
-                     color: AppColor.greyColors,
-                     fontFamily: AppFont.medium,
-                     size: AppSizes.size_15,
-                   ),
+                   Text("₣ ${widget.data.fees.toString()}",
+                     maxLines: 1,
+                     overflow: TextOverflow.ellipsis,
+                     textAlign: TextAlign.start,
+
+                     style: TextStyle(fontSize: AppSizes.size_15,
+
+                         color: AppColor.greyColors,
+                         height:Get.height*0.002,
+                         fontWeight: FontWeight.w600),),
+
 
 
                  ],

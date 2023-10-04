@@ -161,8 +161,7 @@ class _AddAvailbilityState extends State<AddAvailbility> {
                                                   data: ThemeData.light().copyWith(
                                                     primaryColor:
                                                     AppColor.blackColor,
-                                                    accentColor:
-                                                    AppColor.blackColor,
+
                                                     colorScheme: ColorScheme.light(
                                                       primary:
                                                       AppColor.blackColor,),
@@ -242,8 +241,7 @@ class _AddAvailbilityState extends State<AddAvailbility> {
                                                       data: ThemeData.light().copyWith(
                                                         primaryColor:
                                                         AppColor.blackColor,
-                                                        accentColor:
-                                                        AppColor.blackColor,
+
                                                         colorScheme: ColorScheme.light(
                                                           primary:
                                                           AppColor.blackColor,),

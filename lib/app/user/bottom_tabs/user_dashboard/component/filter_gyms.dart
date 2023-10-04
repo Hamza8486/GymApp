@@ -284,8 +284,7 @@ class _FilterGymsState extends State<FilterGyms> {
                                                                         data: ThemeData.light().copyWith(
                                                                           primaryColor:
                                                                           AppColor.blackColor,
-                                                                          accentColor:
-                                                                          AppColor.blackColor,
+
                                                                           colorScheme: ColorScheme.light(
                                                                             primary:
                                                                             AppColor.blackColor,),

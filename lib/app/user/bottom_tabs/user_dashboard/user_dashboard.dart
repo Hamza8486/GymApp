@@ -153,7 +153,7 @@ class _UserDashboardState extends State<UserDashboard> {
                           isShowCursor: false,
                           isReadOnly: true,
                           isSuffix: true,
-                          hint: "What do you looking for?",
+                          hint: "What you're looking for with Filter",
                           hintColor: AppColor.greyColor,
                           fontFamily: AppFont.regular,
                           hintSize: Get.height * 0.014,
@@ -393,8 +393,7 @@ class _UserDashboardState extends State<UserDashboard> {
                                                                       data: ThemeData.light().copyWith(
                                                                         primaryColor:
                                                                         AppColor.blackColor,
-                                                                        accentColor:
-                                                                        AppColor.blackColor,
+
                                                                         colorScheme: ColorScheme.light(
                                                                           primary:
                                                                           AppColor.blackColor,),

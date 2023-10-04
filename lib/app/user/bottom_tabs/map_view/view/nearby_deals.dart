@@ -347,64 +347,73 @@ class _NearbyDealsViewState extends State<NearbyDealsView> {
     return Scaffold(
         body: Stack(
       children: [
-        SizedBox(
-          width: Get.width,
-          height: Get.height * 0.6,
-          child: Stack(
-            children: [
-              Obx(() {
-                locationPosition();
-                  return GoogleMap(
-                    markers: Set<Marker>.of(_markers),
-                    trafficEnabled: false,
-                    zoomControlsEnabled: false,
+        Obx(
+          () {
+            return SizedBox(
+              width: Get.width,
+              height:
+              Get.put(UserController()).sheetHeight.value==0.5?
+
+              Get.height * 0.6: Get.height * 0.8,
+              child: Stack(
+                children: [
+                  Obx(() {
+                    locationPosition();
+                      return GoogleMap(
+                        markers: Set<Marker>.of(_markers),
+                        trafficEnabled: false,
+                        zoomControlsEnabled: false,
 
 
-                    onTap: (position) {
-                      _customInfoWindowController.hideInfoWindow!();
+                        onTap: (position) {
+                          _customInfoWindowController.hideInfoWindow!();
 
-                    },
-                    onCameraMove: (position) {
-                      _customInfoWindowController.onCameraMove!();
-                      if (debounce != null) debounce?.cancel();
-                      startZoomLevel = position.zoom;
-                      setState(() {
-                        debounce = Timer(const Duration(milliseconds: 500), () {
-                          _markers.removeRange(1, _markers.length);
-                          nearController.mapMyData(
-                              lat: position.target.latitude,
-                              lng: position.target.longitude);
-                          locationPosition();
-                        });
-                      });
-                    },
-                    myLocationEnabled:nearController.isLoading.value?false: false,
-                    initialCameraPosition:  CameraPosition(
-                      target: LatLng(37.43296265331129, -122.08832357078792),
-                      zoom: startZoomLevel,
-                    ),
-                    onMapCreated: (GoogleMapController controller) {
-                      setState(() {
-                        _customInfoWindowController.googleMapController =
-                            controller;
-                        _controller = controller;
-                        _controller.setMapStyle(mapStyle);
-                      });
-                    },
-                  );
-                }
+                        },
+                        onCameraMove: (position) {
+                          _customInfoWindowController.onCameraMove!();
+                          if (debounce != null) debounce?.cancel();
+                          startZoomLevel = position.zoom;
+                          setState(() {
+                            debounce = Timer(const Duration(milliseconds: 500), () {
+                              _markers.removeRange(1, _markers.length);
+                              nearController.mapMyData(
+                                  lat: position.target.latitude,
+                                  lng: position.target.longitude);
+                              locationPosition();
+                            });
+                          });
+                        },
+                        myLocationEnabled:nearController.isLoading.value?false: false,
+                        initialCameraPosition:  CameraPosition(
+                          target: LatLng(37.43296265331129, -122.08832357078792),
+                          zoom: startZoomLevel,
+                        ),
+                        onMapCreated: (GoogleMapController controller) {
+                          setState(() {
+                            _customInfoWindowController.googleMapController =
+                                controller;
+                            _controller = controller;
+                            _controller.setMapStyle(mapStyle);
+                          });
+                        },
+                      );
+                    }
+                  ),
+                  CustomInfoWindow(
+                    controller: _customInfoWindowController,
+                    width: Get.height * 0.35,
+                    offset: 30,
+                    height: Get.height * 0.13,
+                  ),
+
+                ],
               ),
-              CustomInfoWindow(
-                controller: _customInfoWindowController,
-                width: Get.height * 0.35,
-                offset: 30,
-                height: Get.height * 0.13,
-              ),
-
-            ],
-          ),
+            );
+          }
         ),
+
         NearByDealList(),
+
 
         Positioned(
             top: size.height * 0.08,
@@ -430,7 +439,9 @@ class _NearbyDealsViewState extends State<NearbyDealsView> {
 
 
               Positioned(
-                top: size.height * 0.45,
+                top:
+                Get.put(UserController()).sheetHeight.value==0.5?
+                size.height * 0.45:size.height * 0.69,
                 right: size.width * 0.03,
                 left:size.width * 0.03 ,
                 child:  Column(
@@ -439,7 +450,7 @@ class _NearbyDealsViewState extends State<NearbyDealsView> {
                     Center(
                       child: AppText(
                         title: "Change Zoom Map",
-                        color: AppColor.blackColor,
+                        color: AppColor.black,
                         fontFamily: AppFont.semi,
                         size: AppSizes.size_16,
                       ),
@@ -473,14 +484,14 @@ class _NearbyDealsViewState extends State<NearbyDealsView> {
                                   );
                                 },
                                 divisions: 100, // Number of divisions
-                                label: "${range.toStringAsFixed(0)}",
+                                label: "${startZoomLevel.toStringAsFixed(0)}",
                               ),
                             ),
                           ),
                         ),
       SizedBox(width: Get.width*0.03,),
       AppText(
-      title: "${startZoomLevel.toStringAsFixed(0)}",
+      title: "${startZoomLevel.toStringAsFixed(0)} km",
       color: AppColor.blackColor,
       fontFamily: AppFont.semi,
       size: AppSizes.size_16,

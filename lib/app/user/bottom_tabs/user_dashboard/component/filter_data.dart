@@ -30,6 +30,9 @@ class _FilterGymDataState extends State<FilterGymData> {
   TextEditingController start = TextEditingController();
   TextEditingController end = TextEditingController();
   String? day;
+  String ? maleType;
+  String ? sessionType;
+
   String? gymType;
   final FocusNode _focusNode = FocusNode();
 
@@ -125,53 +128,181 @@ class _FilterGymDataState extends State<FilterGymData> {
 
                           textAuth(text: "Sessions",color: Colors.transparent),
                           SizedBox(
-                            height: Get.height * 0.01,
+                            height: Get.height * 0.015,
                           ),
-                          SizedBox(
-                              width: Get.width,
-                              child: Obx(() {
-                                return dropDownAppAdd(
-                                  hint: "Select session type",
-                                  width: Get.width * 0.92,
-                                  items: [
-                                    "Solo",
-                                    "Group",
+                          Row(
 
-                                  ],
-                                  value:gymController.sessionName.value.isEmpty?null:gymController.sessionName.value,
-                                  onChange: (value) {
-                                    gymController.updateSessions(value.toString());
+                            children: [
 
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    sessionType="Solo";
+                                  });
+                                },
+                                child: Container(
+                                  color: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      sessionType=="Solo"?
+                                      Icon(Icons.radio_button_checked,color: Colors.black,
+                                      size: Get.height*0.023,
+                                      ):Icon(Icons.radio_button_off,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ),
+                                      SizedBox(width: Get.width*0.015,),
+                                      AppText(
+                                        title: "Solo",
+                                        size: AppSizes.size_15,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: AppFont.medium,
+                                        color: AppColor.boldBlackColor,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: Get.width*0.06,),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    sessionType="Group";
+                                  });
+                                },
+                                child: Container(
+                                  color: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      sessionType=="Group"?
+                                      Icon(Icons.radio_button_checked,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ):Icon(Icons.radio_button_off,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ),
+                                      SizedBox(width: Get.width*0.015,),
+                                      AppText(
+                                        title: "Group",
+                                        size: AppSizes.size_15,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: AppFont.medium,
+                                        color: AppColor.boldBlackColor,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
 
-                                  },
-                                );
-                              })),
+                            ],
+                          ),
+                          // SizedBox(
+                          //     width: Get.width,
+                          //     child: Obx(() {
+                          //       return dropDownAppAdd(
+                          //         hint: "Select session type",
+                          //         width: Get.width * 0.92,
+                          //         items: [
+                          //           "Solo",
+                          //           "Group",
+                          //
+                          //         ],
+                          //         value:gymController.sessionName.value.isEmpty?null:gymController.sessionName.value,
+                          //         onChange: (value) {
+                          //           gymController.updateSessions(value.toString());
+                          //
+                          //
+                          //         },
+                          //       );
+                          //     })),
                           SizedBox(
                             height: Get.height * 0.02,
                           ),
                           textAuth(text: "Gender",color: Colors.transparent),
                           SizedBox(
-                            height: Get.height * 0.01,
+                            height: Get.height * 0.015,
                           ),
-                          SizedBox(
-                              width: Get.width,
-                              child: Obx(() {
-                                return dropDownAppAdd(
-                                  hint: "Select gender",
-                                  width: Get.width * 0.92,
-                                  items: [
-                                    "Male",
-                                    "Female",
+                          Row(
 
-                                  ],
-                                  value:gymController.gendarName.value.isEmpty?null:gymController.gendarName.value,
-                                  onChange: (value) {
-                                    gymController.updateGender(value.toString());
+                            children: [
 
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    maleType="Male";
+                                  });
+                                },
+                                child: Container(
+                                  color: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      maleType=="Male"?
+                                      Icon(Icons.radio_button_checked,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ):Icon(Icons.radio_button_off,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ),
+                                      SizedBox(width: Get.width*0.015,),
+                                      AppText(
+                                        title: "Male",
+                                        size: AppSizes.size_15,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: AppFont.medium,
+                                        color: AppColor.boldBlackColor,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: Get.width*0.06,),
+                              GestureDetector(
+                                onTap: (){
+                                  setState(() {
+                                    maleType="Female";
+                                  });
+                                },
+                                child: Container(
+                                  color: Colors.transparent,
+                                  child: Row(
+                                    children: [
+                                      maleType=="Female"?
+                                      Icon(Icons.radio_button_checked,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ):Icon(Icons.radio_button_off,color: Colors.black,
+                                        size: Get.height*0.023,
+                                      ),
+                                      SizedBox(width: Get.width*0.015,),
+                                      AppText(
+                                        title: "Female",
+                                        size: AppSizes.size_15,
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: AppFont.medium,
+                                        color: AppColor.boldBlackColor,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
 
-                                  },
-                                );
-                              })),
+                            ],
+                          ),
+                          // SizedBox(
+                          //     width: Get.width,
+                          //     child: Obx(() {
+                          //       return dropDownAppAdd(
+                          //         hint: "Select gender",
+                          //         width: Get.width * 0.92,
+                          //         items: [
+                          //           "Male",
+                          //           "Female",
+                          //
+                          //         ],
+                          //         value:gymController.gendarName.value.isEmpty?null:gymController.gendarName.value,
+                          //         onChange: (value) {
+                          //           gymController.updateGender(value.toString());
+                          //
+                          //
+                          //         },
+                          //       );
+                          //     })),
                           SizedBox(
                             height: Get.height * 0.02,
                           ),
@@ -220,7 +351,7 @@ class _FilterGymDataState extends State<FilterGymData> {
                           SizedBox(
                             height: Get.height * 0.01,
                           ),
-                          textAuth(text: "Radius Range",color: Colors.transparent),
+                          textAuth(text: "Distance Range",color: Colors.transparent),
                           SizedBox(
                             height: Get.height * 0.02,
                           ),
@@ -253,7 +384,7 @@ class _FilterGymDataState extends State<FilterGymData> {
                           Align(
                             alignment: Alignment.topRight,
                             child: AppText(
-                              title: range.toStringAsFixed(0),
+                              title: "${range.toStringAsFixed(0)} km",
                               size: AppSizes.size_15,
                               fontWeight: FontWeight.w400,
                               fontFamily: AppFont.semi,
@@ -296,38 +427,38 @@ class _FilterGymDataState extends State<FilterGymData> {
 
                                 },
                               )),
-                          SizedBox(
-                            height: Get.height * 0.02,
-                          ),
-                          textAuth(text: "Day",color: Colors.transparent),
-                          SizedBox(
-                            height: Get.height * 0.01,
-                          ),
-                          SizedBox(
-                              width: Get.width,
-                              child: dropDownAppAdd(
-                                hint: "Select day",
-                                width: Get.width * 0.92,
-                                items: [
-                                  "Mon",
-                                  "Tue",
-                                  "Wed",
-                                  "Thu",
-                                  "Fri",
-                                  "Sat",
-                                  "Sun",
-
-                                ],
-                                value:day,
-                                onChange: (value) {
-                                  setState(() {
-                                    day=value.toString();
-                                  });
-
-
-
-                                },
-                              )),
+                          // SizedBox(
+                          //   height: Get.height * 0.02,
+                          // ),
+                          // textAuth(text: "Day",color: Colors.transparent),
+                          // SizedBox(
+                          //   height: Get.height * 0.01,
+                          // ),
+                          // SizedBox(
+                          //     width: Get.width,
+                          //     child: dropDownAppAdd(
+                          //       hint: "Select day",
+                          //       width: Get.width * 0.92,
+                          //       items: [
+                          //         "Mon",
+                          //         "Tue",
+                          //         "Wed",
+                          //         "Thu",
+                          //         "Fri",
+                          //         "Sat",
+                          //         "Sun",
+                          //
+                          //       ],
+                          //       value:day,
+                          //       onChange: (value) {
+                          //         setState(() {
+                          //           day=value.toString();
+                          //         });
+                          //
+                          //
+                          //
+                          //       },
+                          //     )),
                           SizedBox(
                             height: Get.height * 0.02,
                           ),
@@ -370,8 +501,7 @@ class _FilterGymDataState extends State<FilterGymData> {
                                             data: ThemeData.light().copyWith(
                                               primaryColor:
                                               AppColor.blackColor,
-                                              accentColor:
-                                              AppColor.blackColor,
+
                                               colorScheme: ColorScheme.light(
                                                 primary:
                                                 AppColor.blackColor,),
@@ -595,10 +725,10 @@ class _FilterGymDataState extends State<FilterGymData> {
 
                                   () {
                                 gymController.updateLoader2(true);
-                                gymController.getFilterData(gendar: gymController.gendarName.value,fees:
+                                gymController.getFilterData(gendar: maleType==null?"":maleType.toString(),fees:
                                 _startValue==0.0?"":
                                 _startValue.toStringAsFixed(0),
-                                    sessions: gymController.sessionName.value,
+                                    sessions: sessionType==null?"":sessionType.toString(),
                                   time: start.text,
                                   time1: end.text,
                                   date: startDate.text,
@@ -610,10 +740,10 @@ class _FilterGymDataState extends State<FilterGymData> {
                                if(validateGym(context)){
                                  gymController.updateLoader2(true);
                                  print(_startValue.toStringAsFixed(0));
-                                 gymController.getFilterData(gendar: gymController.gendarName.value,fees:
+                                 gymController.getFilterData(gendar: maleType==null?"":maleType.toString(),fees:
                                  _startValue==0.0?"":
                                  _startValue.toStringAsFixed(0),
-                                   sessions: gymController.sessionName.value,
+                                   sessions:sessionType==null?"":sessionType.toString(),
                                    time: start.text,
                                    time1: end.text,
                                    date: startDate.text,
